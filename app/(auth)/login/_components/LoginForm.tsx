@@ -19,6 +19,8 @@ import { toast } from "sonner";
 export function LoginForm() {
   const router = useRouter();
   const [githubPending, startGithubTransition] = useTransition();
+  const [googlePending, startGoogleTransition] = useTransition();
+  
   async function signInWithGithub() {
     startGithubTransition(async () => {
       await authClient.signIn.social({
@@ -35,6 +37,24 @@ export function LoginForm() {
       });
     });
   }
+
+  async function signInWithGoogle() {
+    startGoogleTransition(async () => {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Signed in with Google, you will be redirected...");
+          },
+          onError: () => {
+            toast.error("Internal Server Error");
+          },
+        },
+      });
+    });
+  }
+  
   return (
     <Card>
       <CardHeader>
@@ -45,9 +65,23 @@ export function LoginForm() {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4">
-        <Button className="w-full" variant="outline">
-          <GoogleSVG />
-          Sign in with Google
+        <Button 
+          disabled={googlePending}
+          onClick={signInWithGoogle}
+          className="w-full" 
+          variant="outline"
+        >
+          {googlePending ? (
+            <>
+              <Loader className="size-4 animate-spin" />
+              <span>Loading...</span>
+            </>
+          ) : (
+            <>
+              <GoogleSVG />
+              Sign in with Google
+            </>
+          )}
         </Button>
         <Button
           disabled={githubPending}
