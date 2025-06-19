@@ -1,16 +1,6 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import React from 'react'
+import { redirect } from "next/navigation";
+import LoginForm from "./_components/LoginForm";
 
-const LoginPage = () => {
-  return (
-    <Card>
-        <CardHeader>
-            <CardTitle className='text-xl'>Welcome back!</CardTitle>
-            <CardDescription>Login with your Github Email Account</CardDescription>
-        </CardHeader>
-    </Card>
-  )
+export default async function LoginPage() {
+  return <LoginForm />;
 }
-
-export default LoginPage
