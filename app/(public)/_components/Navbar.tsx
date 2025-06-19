@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -16,10 +16,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/ui/themeToggle";
-import { authClient } from "@/lib/auth-client";
-import { UserDropdown } from "./UserDropdown";
 import Logo from "@/public/logo.png";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { UserDropdown } from "./UserDropdown";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -29,7 +28,8 @@ const navigationLinks = [
 ];
 
 export function Navbar() {
-  const {user,isPending}=useCurrentUser();
+  const { user, isPending } = useCurrentUser();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-[backdrop-filter]:bg-background/60 px-4 md:px-6">
@@ -89,14 +89,13 @@ export function Navbar() {
               </NavigationMenu>
             </PopoverContent>
           </Popover>
-          
+
           {/* Main nav */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center space-x-2 text-primary hover:text-primary/90">
               <Image src={Logo} alt="Logo" className="size-9" />
               <span className="font-bold">Better Template</span>
             </Link>
-            
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
@@ -115,24 +114,37 @@ export function Navbar() {
             </NavigationMenu>
           </div>
         </div>
-        
+
         {/* Right side */}
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          
+
           {isPending ? null : user ? (
-            <UserDropdown
-              email={user.email}
-              image={
-                user.image ??
-                `https://avatar.vercel.sh/${user.email}`
-              }
-              name={
-                user.name && user.name.length > 0
-                  ? user.name
-                  : user.email.split("@")[0]
-              }
-            />
+            isLoggingOut ? (
+              // Spinner replaces avatar
+              <div className="size-9 flex items-center justify-center">
+                <svg className="animate-spin h-6 w-6 text-muted-foreground" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12" cy="12" r="10"
+                    stroke="currentColor" strokeWidth="4" fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+              </div>
+            ) : (
+              <UserDropdown
+                email={user.email}
+                image={user.image ?? `https://avatar.vercel.sh/${user.email}`}
+                name={user.name && user.name.length > 0 ? user.name : user.email.split("@")[0]}
+                onLogoutStart={() => setIsLoggingOut(true)}
+                onLogoutEnd={() => setIsLoggingOut(false)}
+              />
+            )
           ) : (
             <>
               <Button asChild variant="ghost" size="sm" className="text-sm">
