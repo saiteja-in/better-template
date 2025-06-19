@@ -2,13 +2,12 @@ import { auth } from "@/lib/auth";
 import {LoginForm}  from "./_components/LoginForm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { currentUser } from "@/lib/user";
 
 export default async function LoginPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const user=await currentUser();
 
-  if (session) {
+  if (user) {
     return redirect("/");
   }
   return <LoginForm />;
