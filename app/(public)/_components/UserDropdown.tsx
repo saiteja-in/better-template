@@ -46,7 +46,8 @@ export function UserDropdown({ name, email, image, onLogoutStart, onLogoutEnd }:
     try {
       onLogoutStart && onLogoutStart();
       await signOut();
-      // If you need to redirect, do it here, or let signOut handle it
+      // 👇 Reload the page or redirect to update all client/server state instantly
+      window.location.href = "/"; // Or: window.location.reload();
     } finally {
       onLogoutEnd && onLogoutEnd();
     }
