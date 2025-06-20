@@ -19,6 +19,7 @@ import { ThemeToggle } from "@/components/ui/themeToggle";
 import Logo from "@/public/logo.png";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { UserDropdown } from "./UserDropdown";
+import { ThemeSwitcher } from "./themes/theme-switcher";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -117,7 +118,8 @@ export function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-4">
-          <ThemeToggle />
+        <ThemeSwitcher />
+          {/* <ThemeToggle /> */}
 
           {isPending ? null : user ? (
             isLoggingOut ? (
